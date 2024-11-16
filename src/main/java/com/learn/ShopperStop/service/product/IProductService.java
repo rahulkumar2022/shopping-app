@@ -1,5 +1,6 @@
 package com.learn.ShopperStop.service.product;
 
+import com.learn.ShopperStop.dto.ProductDto;
 import com.learn.ShopperStop.model.Product;
 import com.learn.ShopperStop.request.AddProductRequest;
 import com.learn.ShopperStop.request.ProductUpdateRequest;
@@ -22,5 +23,7 @@ public interface IProductService {
     Long countProductsByBrandAndName(String brand,String name);
 
 
+    List<ProductDto> getConvertedProducts(List<Product> products);
 
+    ProductDto convertToProductDto(Product product);
 }

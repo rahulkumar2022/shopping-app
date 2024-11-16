@@ -1,6 +1,7 @@
 package com.learn.ShopperStop.controller;
 
 
+import com.learn.ShopperStop.dto.ProductDto;
 import com.learn.ShopperStop.exceptions.ResourceNotFoundException;
 import com.learn.ShopperStop.model.Product;
 import com.learn.ShopperStop.reponse.ApiResponse;
@@ -25,13 +26,15 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllProducts(){
         List<Product> products = iProductService.getAllProducts();
-        return ResponseEntity.ok(new ApiResponse("success",products));
+        List<ProductDto> convertedProduct = iProductService.getConvertedProducts(products);
+        return ResponseEntity.ok(new ApiResponse("success",convertedProduct));
     }
     @GetMapping("/product/{productId}/product")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long productId){
         try{
             Product product = iProductService.getProductById(productId);
-            return ResponseEntity.ok(new ApiResponse("Success",product));
+            ProductDto productDto = iProductService.convertToProductDto(product);
+            return ResponseEntity.ok(new ApiResponse("Success",productDto));
         }
         catch (ResourceNotFoundException e){
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
@@ -79,7 +82,8 @@ public class ProductController {
             List<Product> products = iProductService.getProductByBrandAndName(brandName,productName);
             if(products.isEmpty())
                 return ResponseEntity.ok(new ApiResponse("No Product found!!",null));
-             return ResponseEntity.ok(new ApiResponse("Success",products));
+            List<ProductDto> productDtos = iProductService.getConvertedProducts(products);
+             return ResponseEntity.ok(new ApiResponse("Success",productDtos));
         }
         catch (Exception e){
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(),null));
@@ -93,7 +97,8 @@ public class ProductController {
             List<Product> products = iProductService.getProductByName(name);
             if(products.isEmpty())
                 return ResponseEntity.ok(new ApiResponse("No Product found!!",null));
-            return ResponseEntity.ok(new ApiResponse("Success",products));
+            List<ProductDto> productDtos = iProductService.getConvertedProducts(products);
+            return ResponseEntity.ok(new ApiResponse("Success",productDtos));
         }
         catch (Exception e){
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(),null));
